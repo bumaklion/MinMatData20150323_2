@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <!--prints everything to the console -->
+    <appender class="org.apache.log4j.ConsoleAppender" name="stdout">
+        <param value="System.out" name="Target"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param value="%d{yyyy-MM-dd HH:mm:ss:SSS} [%t] %-5p %c %x - %m%n" name="ConversionPattern"/>
+        </layout>
+    </appender>
+
+    <!-- a rolling (24h) file with debug -> warn -->
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="debugFile">
+        <param value="true" name="Append"/>
+        <param value="'.'yyyy-MM-dd'.log'" name="DatePattern"/>
+        <param value="UTF-8" name="Encoding"/>
+        <param value="${catalina.base}/logs/debug.log." name="File"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param value="%d [%t] %-5p %c- %m%n" name="ConversionPattern"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="levelMin" value="DEBUG"/>
+            <param name="levelMax" value="WARN"/>
+        </filter>
+    </appender>
+
+    <!-- custom stream that handles stderr >= warn-->
+    <appender class="org.apache.log4j.DailyRollingFileAppender" name="errorFile">
+        <param value="true" name="Append"/>
+        <param value="'.'yyyy-MM-dd'.log'" name="DatePattern"/>
+        <param value="UTF-8" name="Encoding"/>
+        <param value="${catalina.base}/logs/error.log." name="File"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param value="%d [%t] %-5p %c- %m%n" name="ConversionPattern"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="levelMin" value="ERROR"/>
+        </filter>
+    </appender>
+
+    <!-- ROOT LOGGER (all loggers inherit from this logger) -->
+    <root>
+        <level value="all"/>
+        <appender-ref ref="debugFile"/>
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="errorFile"/>
+    </root>
+
+</log4j:configuration>
